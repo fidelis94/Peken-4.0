@@ -7,7 +7,7 @@ class ApiService {
         console.log('request [POST]-', url, params, header)
         return axios.post(url,params,header)
         .then(response => {
-            console.log('response [POST]-', url, response)
+            // console.log('response [POST]-', url, response)
             return response
         })
     }
@@ -17,7 +17,7 @@ class ApiService {
         console.log('request [GET]-', url)
         return axios.get(url,params,header)
         .then(response => {
-            console.log('response [GET]-', url, response)
+            // console.log('response [GET]-', url, response)
             return response
         })
     }

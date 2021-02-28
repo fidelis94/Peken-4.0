@@ -1,4 +1,3 @@
-import {Assets} from '@react-navigation/stack';
 import React from 'react';
 import {
   SafeAreaView,
@@ -6,100 +5,86 @@ import {
   FlatList,
   StyleSheet,
   Text,
-  StatusBar,
   TouchableHighlight,
   ImageBackground,
-  Image,
-  Dimensions,
+  TextInput,
 } from 'react-native';
-import axios from 'axios';
-import {Searchbar} from 'react-native-paper';
 import {useEffect, useState} from 'react';
-
-// const Market = ({navigation}) => {
-//   const [notes, setNotes] = useState([]);
-
-//   useEffect(() => {
-//     getAllNotes();
-//   }, []);
-
-//   const getAllNotes = () => {
-//     axios
-//       .get('https://pasar-gembira4-0.herokuapp.com/toko/')
-//       .then((res) => {
-//         // console.log(res.data.toko);
-//         setNotes(res.data.toko);
-//       })
-//       .catch((err) => {
-//         console.log(err);
-//       });
-//   };
-
-//   const [searchQuery, setSearchQuery] = React.useState('');
-
-//   const onChangeSearch = (query) => setSearchQuery(query);
-
-//   const renderItem = ({item}) => {
-//     return (
-//       <TouchableHighlight onPress={() => navigation.navigate('DetailToko')}>
-//         <View style={styles.item}>
-//           <Text style={styles.nama}>{item.nama}</Text>
-//           <Text style={styles.alamat}>{item.alamat}</Text>
-//           <Image source={{uri: gambar}}></Image>
-//         </View>
-//       </TouchableHighlight>
-//     );
-//   };
-
-//   return (
-//     <SafeAreaView style={styles.container}>
-//       <View>
-//         <View style={{marginBottom: 20, justifyContent: 'flex-start'}}>
-//           <Text style={{fontFamily: 'Poppins-Bold', color: 'white'}}>
-//             Peken
-//           </Text>
-//         </View>
-//         <Searchbar
-//           style={{marginBottom: 20, margin: 10}}
-//           placeholder="Search"
-//           onChangeText={onChangeSearch}
-//           value={searchQuery}
-//         />
-//         <FlatList
-//           data={notes}
-//           renderItem={renderItem}
-//           keyExtractor={(item) => item.id + ''}
-//         />
-//       </View>
-//     </SafeAreaView>
-//   );
-// };
+import AuthService from '../../services/AuthService';
+import SkeletonContent from 'react-native-skeleton-content-nonexpo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {COLOR} from '../../utils/styles/Color';
 
 const Item = ({nama, navigasi, alamat, gambar}) => (
-  <TouchableHighlight onPress={navigasi}>
-    <View style={styles.item}>
-      <Text style={styles.nama}>{nama}</Text>
-      <Text style={styles.alamat}>{alamat}</Text>
-      <Image source={{uri: gambar}}></Image>
+  <TouchableHighlight
+    activeOpacity={0.6}
+    onPress={navigasi}
+    style={{
+      borderRadius: 5,
+      height: 220,
+      width: 200,
+      margin: 9,
+      backgroundColor: 'white',
+      shadowColor: '#000',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 1.41,
+
+      elevation: 2,
+    }}>
+    <View>
+      <ImageBackground
+        resizeMode="cover"
+        source={{uri: gambar}}
+        imageStyle={{
+          justifyContent: 'flex-end',
+          alignItems: 'flex-end',
+        }}
+        style={styles.item}
+      />
+      <View
+        style={{
+          
+          padding: 4,
+          alignItems: 'center',
+          height: 60,
+          width: 200,
+          alignSelf: 'center',
+        }}>
+        <Text style={{fontSize: 12, color: '#f67e7d', fontWeight: '400'}}>
+          {nama}
+        </Text>
+        <Text
+          style={{
+            fontSize: 10,
+            fontWeight: 'bold',
+            color: '#350b40',
+          }}>
+          {alamat}
+        </Text>
+      </View>
     </View>
   </TouchableHighlight>
 );
 
 const Market = ({navigation}) => {
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState();
 
   useEffect(() => {
     getAllNotes();
   }, []);
 
   const getAllNotes = () => {
-    axios
-      .get('https://pasar-gembira4-0.herokuapp.com/toko/')
+    AuthService.getListMarket()
       .then((res) => {
-        // console.log(res.data.toko);
+        // console.log(res.data.toko)
         setNotes(res.data.toko);
       })
-      .catch((err) => {
+      .then((err) => {
         console.log(err);
       });
   };
@@ -109,33 +94,146 @@ const Market = ({navigation}) => {
       nama={item.nama}
       alamat={item.alamat}
       gambar={item.gambar}
-      navigasi={() => navigation.navigate('DetailToko')}
+      navigasi={() => navigation.navigate('TokoScreen', {idtoko: item.id})}
     />
   );
 
-  const [searchQuery, setSearchQuery] = React.useState('');
-
-  const onChangeSearch = (query) => setSearchQuery(query);
-
   return (
     <SafeAreaView style={styles.container}>
-      <View>
-        <View style={{marginBottom: 20, justifyContent: 'flex-start'}}>
-          <Text style={{fontFamily: 'Poppins-Bold', color: 'white'}}>
-            Peken
+      <View style={{width: '100%', height: '30%'}}>
+        <Text
+          style={{
+            fontFamily: 'Poppins-Bold',
+            fontSize: 30,
+            marginVertical: 20,
+            marginLeft: 10,
+            fontWeight: 'bold',
+            alignSelf:'center'
+          }}>
+          Peken 4.0
+        </Text>
+        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <View
+                style={{
+                  width: 200,
+                  height: 40,
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                  marginRight: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingLeft: 5,
+                }}>
+                <MaterialCommunityIcons
+                  name="shopping-search"
+                  color="#5db075"
+                  size={20}
+                  resizeMode="contain"
+                />
+                <TextInput 
+                placeholder={'Cari Barang'}
+                style={{marginLeft: 20, fontSize: 12, color: '#aeaeae'}}>
+                </TextInput>
+              </View>
+
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                  marginRight: 10,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <MaterialCommunityIcons
+                  name="heart-outline"
+                  color="#5db075"
+                  size={20}
+                  resizeMode="contain"
+                />
+              </View>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 10,
+                  backgroundColor: 'white',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <MaterialCommunityIcons
+                  name="cart"
+                  color="#5db075"
+                  size={20}
+                  resizeMode="contain"
+                />
+              </View>
+            </View>
+        <View style={{flexDirection: 'row', justifyContent: 'space-around', marginTop: 30,}}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 'bold',
+            }}>
+            shoes
+          </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 'bold',
+              color: '#aeaeae',
+            }}>
+            sweater
+          </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 'bold',
+              color: '#aeaeae',
+            }}>
+            tank top
           </Text>
         </View>
-        <Searchbar
-          style={{marginBottom: 20, margin: 10}}
-          placeholder="Search"
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-        />
-        <FlatList
-          data={notes}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id + ''}
-        />
+      </View>
+      <View
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: 600,
+          shadowColor: '#000',
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.2,
+          shadowRadius: 1.41,
+
+          elevation: 2,
+          backgroundColor: 'white',
+        }}>
+        {notes ? (
+          <FlatList
+            key={'_'}
+            data={notes}
+            renderItem={renderItem}
+            // ItemSeparatorComponent={()=><View style={{height:20,width:'100%',}}/>
+            // }
+
+            horizontal
+            keyExtractor={(item) => item.id + ''}
+          />
+        ) : (
+          <View >
+            <SkeletonContent
+              containerStyle={styles.skeleton}
+              isLoading={notes}
+              layout={[
+                {key: 'notes', width: 150, height: 150},
+              ]}></SkeletonContent>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -144,25 +242,39 @@ const Market = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
+    backgroundColor: COLOR.primary,
   },
   item: {
-    backgroundColor: '#0095da',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 8,
-    borderRadius: 10,
-    height: 200,
+    backgroundColor: '#DEE1DD',
+    borderRadius: 2,
+    height: 150,
+    width: 200,
+    shadowColor: '#000',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+
+    elevation: 2,
   },
   nama: {
-    fontSize: 32,
+    fontSize: 30,
+    fontFamily: 'Poppins-Bold',
+    textAlign: 'center',
   },
   alamat: {
-    fontSize: 25,
+    fontSize: 20,
+    fontFamily: 'Poppins-Light',
+    textAlign: 'center',
   },
-  gambar: {
-    height: 10,
-    width: 10,
+  skeleton: {
+    borderRadius: 10,
+    height: 150,
+    width: 150,
+    margin: 9,
   },
 });
 

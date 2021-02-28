@@ -26,27 +26,27 @@ export const SIZE = {
 
 export const FONT = {
   h0: {
-    fontFamily: 'Poppins-ExtraBold',
+    fontFamily: 'Poppins-Bold',
     fontSize: SIZE.xxl,
     lineHeight: SIZE.xxl + 5,
   },
   h1: {
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Poppins-SemiBold',
     fontSize: SIZE.xl,
     lineHeight: SIZE.xl + 6,
   },
   h2: {
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Poppins-SemiBold',
     fontSize: SIZE.l,
     lineHeight: SIZE.l + 8,
   },
   h3: {
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Poppins-SemiBold',
     fontSize: SIZE.m,
     lineHeight: SIZE.m + 6,
   },
   h4: {
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Poppins-SemiBold',
     fontSize: SIZE.s,
     lineHeight: SIZE.s + 8,
   },
@@ -77,7 +77,7 @@ export const FONT = {
   },
   placeholder: {
     fontFamily: 'Poppins-Regular',
-    fontSize: SIZE.s,
+    fontSize: SIZE.m,
   },
   button1: {
     fontFamily: 'Poppins-SemiBold',

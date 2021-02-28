@@ -1,99 +1,184 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  SafeAreaView,
-  View,
-  FlatList,
   StyleSheet,
   Text,
-  StatusBar,
-  ImageBackground
+  View,
+  ImageBackground,
+  ScrollView,
+  TouchableHighlight,
+  Alert
 } from 'react-native';
-import { Searchbar, TouchableRipple} from 'react-native-paper';
+import {set} from 'react-native-reanimated';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import AuthService from '../../services/AuthService';
+import {useSelector,useDispatch} from 'react-redux';
+import {counter_minus,counter_add,add_list} from '../../redux/actions/ActionCounter'
+import { COLOR } from '../../utils/styles/Color';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'Produk',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Produk',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Produk',
-  },
-];
 
-// const [produk, setProduk] = useState(DATA)
 
-// const renderItem = ({item}) => {
-//   return (
-//     <View>
-//       <Text>{item.title}</Text>
-//     </View>
-//   )
-// }
 
-// return (
-//   <View>
-//     <Text>Home</Text>
-//     <FlatList
-//       data={DATA}
-//       renderItem={}
-//   </View>
-// )
-const Item = ({title,toko}) => (
-  <TouchableRipple onPress={toko} activeOpacity={5}>
-      <ImageBackground  source={require('../../../assets/sayur.jpg')} style={styles.item}>
-        <Text style={styles.title}>{title}</Text>
-      </ImageBackground>
-  </TouchableRipple>
-);
 
-const DetailToko = ({navigation}) => {
-  const renderItem = ({item}) => <Item title={item.title} toko={()=>navigation.navigate('TokoScreen')} />;
 
-  const [searchQuery, setSearchQuery] = React.useState('');
+const DetailToko = ({route, navigation}) => {
+  const [detailBarang, setDetailBarang] = useState({});
+  detailBarang.counter = 1 ;
+  const {detailId} = route.params;
+  const dispatch =useDispatch()
+  const {dashboard} = useSelector((state)=>state)
 
-  const onChangeSearch = query => setSearchQuery(query);
+  useEffect(() => {
+    getAllDetails();
+  }, []);
+
+  const getAllDetails = () => {
+    AuthService.getDetailStore(detailId)
+      .then((res) => {
+        console.log('halo', res.data.data, 'halo');
+        setDetailBarang(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style= {{marginBottom: 20, justifyContent: 'flex-start'}}>
-        <Text style= {{fontFamily: "Poppins-Bold"}}>Peken</Text>
+    <>
+      <View style={{backgroundColor: 'white', flex: 1}}>
+        <View>
+          <ImageBackground
+            style={{
+              width: '100%',
+              height: 250,
+              marginRight: 10,
+              resizeMode: 'cover',
+              opacity: 0.9,
+            }}
+            source={{uri: detailBarang.image}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                height: 60,
+                alignItems: 'center',
+              }}>
+              <View
+                style={{
+                  width: 40,
+                  height: 40,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginRight: 160,
+                }}>
+                <MaterialCommunityIcons
+                  name="arrow-left"
+                  color="black"
+                  size={25}
+                  resizeMode="contain"
+                />
+              </View>
+            </View>
+          </ImageBackground>
+        </View>
+        <ScrollView>
+          <View style={{padding: 20}}>
+            <Text style={{fontSize: 15, fontWeight: 'bold', color: '#aeaeae'}}>
+              Toko
+            </Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold', color: '#350b40'}}>
+              {detailBarang.name}
+            </Text>
+            <Text style={{fontSize: 25, fontWeight: 'bold', color: '#ff9292'}}>
+              {detailBarang.price}
+            </Text>
+            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Color</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                paddingHorizontal: 60,
+                paddingVertical: 20,
+              }}>
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 20,
+                  backgroundColor: 'red',
+                }}
+              />
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 20,
+                  backgroundColor: 'pink',
+                }}
+              />
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 20,
+                  backgroundColor: 'yellow',
+                }}
+              />
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 20,
+                  backgroundColor: 'blue',
+                }}
+              />
+              <View
+                style={{
+                  width: 20,
+                  height: 20,
+                  borderRadius: 20,
+                  backgroundColor: 'red',
+                }}
+              />
+            </View>
+            <Text style={{fontSize: 15, fontWeight: 'bold'}}>Description</Text>
+            <Text style={{opacity: 0.8, color: 'black'}}>
+              {detailBarang.deskp}
+            </Text>
+            <TouchableHighlight
+              activeOpacity={0.5}
+              onPress={() => {
+                dispatch({type:'ADD_LIST',payload:detailBarang})
+                dispatch({type:'SUM_COUNTER'})
+              }}
+
+              style={{
+                alignSelf:'center',
+                marginTop: 15,
+                width: 260,
+                height: 40,
+                backgroundColor:COLOR.primary,
+                borderRadius: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 1,
+                },
+                shadowOpacity: 0.27,
+                shadowRadius: 1.42,
+
+                elevation: 2,
+              }}>
+              <Text style={{fontWeight: 'bold'}}>ADD TO CART</Text>
+            </TouchableHighlight>
+          </View>
+        </ScrollView>
       </View>
-      <Searchbar style={{marginBottom: 20}}
-      placeholder="Search"
-      onChangeText={onChangeSearch}
-      value={searchQuery}/>
-      <FlatList
-        data={DATA}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-      />
-    </SafeAreaView>
+    </>
   );
 };
 
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight || 0,
-  },
-  item: {
-    backgroundColor: '#0095da',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    height: 200,
-  },
-  title: {
-    fontSize: 32,
-  },
-});
-
-
 export default DetailToko;
+
+const styles = StyleSheet.create({});
